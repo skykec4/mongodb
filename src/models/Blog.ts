@@ -17,6 +17,6 @@ const UserSchema: Schema<IBlog> = new Schema(
 	{ timestamps: true },
 );
 
-const User: Model<IBlog> = model("blog", UserSchema);
+const Blog: Model<IBlog> = model("blog", UserSchema);
 
-export { User, IBlog };
+export { Blog, IBlog };

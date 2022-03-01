@@ -2,13 +2,17 @@ import express, { Request, Response, ErrorRequestHandler, NextFunction } from "e
 import { connect, set } from "mongoose";
 import process from "process";
 
-import user from "./routes/user";
+import userRoute from "./routes/user";
+import blogRoute from "./routes/blog";
+
+require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 3000;
-const MONGODB_URI =
-	"mongodb+srv://admin:qwer123434@cluster0.zcf94.mongodb.net/blogService?retryWrites=true&w=majority";
 
+const DATABASE = "blogService";
+const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@cluster0.zcf94.mongodb.net/${DATABASE}?retryWrites=true&w=majority`;
+console.log("process.env.MONGODB_USER : ", process.env.MONGODB_USER);
 const startServer = async () => {
 	try {
 		await connect(MONGODB_URI);
@@ -17,7 +21,8 @@ const startServer = async () => {
 
 		app.use(express.json());
 
-		app.use("/user", user);
+		app.use("/user", userRoute);
+		app.use("/blog", blogRoute);
 
 		app.use(handleError);
 
