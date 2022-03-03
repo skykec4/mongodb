@@ -1,11 +1,39 @@
 import { Router } from "express";
 import { Blog } from "../models/Blog";
+import { User } from "../models/User";
+import { validCheck } from "../utils/validation";
 
 const router = Router();
 
 router.use((req, res, next) => {
-	console.log("middleware Time: ", Date.now());
+	console.log("blog middle ware : ", Date.now());
 	next();
+});
+
+router.post("/", async (req, res) => {
+	try {
+		const params = req.body;
+
+		const _validCheck = validCheck("blog", params);
+
+		if (_validCheck !== "") {
+			res.send(_validCheck);
+			return;
+		}
+		const user = await User.findById(params.user);
+		if (!user) {
+			res.send("user does not exist");
+			return;
+		}
+
+		const blog = new Blog({ ...params, user });
+		await blog.save();
+
+		res.send({ blog });
+	} catch (error) {
+		console.log(error);
+		res.send(`erorr : ${error}`);
+	}
 });
 
 router.get("/", async (req, res) => {
@@ -33,40 +61,48 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
 	try {
-		// const { id } = req.params;
-		// const { age } = req.body;
-		// // const users = await User.findOneAndUpdate({ id }, { $set: { age } }, { new: true });
-		// const blogs: any = await Blog.findOne({ username: id });
-		// users.age = age;
-		// console.log("users : ", users);
-		// await users.save();
-		// res.send({ users });
+		/*
+		 * params
+		 * title
+		 * content
+		 */
+		const params = req.body;
+
+		const _validCheck = validCheck("blog/put", params);
+
+		if (_validCheck !== "") {
+			res.send(_validCheck);
+			return;
+		}
+
+		const updateBlog = await Blog.findByIdAndUpdate(req.params.id, params, { new: true });
+
+		res.send({ updateBlog });
 	} catch (error) {
-		console.log("error: error");
+		console.log("error : ", error);
+		res.send({ err: "error", error });
+	}
+});
+
+router.patch("/:id", async (req, res) => {
+	try {
+		const updateBlog = await Blog.findByIdAndUpdate(req.params.id, { islive: true }, { new: true });
+
+		res.send({ updateBlog });
+	} catch (error) {
+		console.log("error : ", error);
 		res.send({ err: "error", error });
 	}
 });
 
 router.delete("/:id", async (req, res) => {
 	try {
-		const { id } = req.params;
-		const users = await Blog.findOneAndDelete({ username: id });
+		const users = await Blog.findByIdAndDelete(req.params.id);
 
 		res.send({ users });
 	} catch (error) {
 		console.log("error: error");
 		res.send({ err: "error", error });
-	}
-});
-
-router.post("/", async (req, res) => {
-	try {
-		const data = new Blog(req.body);
-		await data.save();
-		res.send(data);
-	} catch (error) {
-		console.log(error);
-		res.send(`erorr : ${error}`);
 	}
 });
 

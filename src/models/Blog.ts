@@ -1,10 +1,10 @@
-import { Schema, model, Document, Model, Types } from "mongoose";
+import { Schema, model, Document, Model, Types, ObjectId } from "mongoose";
 
 interface IBlog extends Document {
 	title: string;
 	content: string;
 	islive: Boolean;
-	user: Object;
+	user: ObjectId;
 }
 
 const UserSchema: Schema<IBlog> = new Schema(
