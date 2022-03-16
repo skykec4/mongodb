@@ -12,7 +12,7 @@ const UserSchema: Schema<IBlog> = new Schema(
 		title: { type: String, required: true },
 		content: { type: String, required: true },
 		islive: { type: Boolean, required: true, default: false },
-		user: { type: Types.ObjectId, required: true, ref: "users" },
+		user: { type: Types.ObjectId, required: true, ref: "user" },
 	},
 	{ timestamps: true },
 );

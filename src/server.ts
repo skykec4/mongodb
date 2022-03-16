@@ -4,6 +4,7 @@ import process from "process";
 
 import userRoute from "./routes/user";
 import blogRoute from "./routes/blog";
+import commentRoute from "./routes/comment";
 
 require("dotenv").config();
 

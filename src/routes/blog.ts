@@ -2,6 +2,7 @@ import { Router } from "express";
 import { Blog } from "../models/Blog";
 import { User } from "../models/User";
 import { validCheck } from "../utils/validation";
+import commentRoute from "./comment";
 
 const router = Router();
 
@@ -9,6 +10,8 @@ router.use((req, res, next) => {
 	console.log("blog middle ware : ", Date.now());
 	next();
 });
+
+router.use("/:blogId/comment", commentRoute);
 
 router.post("/", async (req, res) => {
 	try {
